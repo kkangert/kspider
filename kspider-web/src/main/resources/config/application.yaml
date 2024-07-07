@@ -1,0 +1,66 @@
+# server
+server:
+    address: 0.0.0.0
+    port: 8086
+    # tomcat
+    tomcat:
+        basedir: ${user.home}/kspider/tmp
+
+# log
+logging:
+    level.top.kangert.kspider: info
+    file:
+        name: ${user.home}/kspider/logs/kspider.log
+
+# spring
+spring:
+    application:
+        name: kspider
+    profiles:
+        # 引入其他配置文件
+        include: user
+    jackson:
+        time-zone: GMT+8
+        date-format: yyyy-MM-dd HH:mm:ss
+    # datasource
+    datasource:
+        url: jdbc:mysql://localhost:3306/aiserver?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=true
+        username: root
+        password: 123456
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    # jpa
+    jpa:
+        # hibernate
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        open-in-view: true
+    # cache
+    cache:
+        caffeine:
+            # initialCapacity     初始的缓存空间大小
+            # maximumSize         缓存的最大容量
+            # expireAfterWrite    最后一次写入后多久失效
+            # expireAfterAccess   距离最后一次访问或写入后多久失效
+            spec: initialCapacity=50,maximumSize=500,expireAfterWrite=3h,expireAfterAccess=3h
+    main:
+        # 允许循环依赖(TODO: 临时解决方法)
+        allow-circular-references: true
+
+# spider
+spider:
+    # 单个流程任务默认的最大线程数
+    default-threads: 8
+    # 死循环检测（只在测试流程时才会启用）
+    dead-cycle: 5000
+    # 工作目录
+    workspace: ${user.home}/kspider
+    # 线程池
+    thread-pool:
+        # 线程池最大线程数
+        max-threads: 64
+    # 定时任务
+    job:
+        # 是否开启
+        enabled: true

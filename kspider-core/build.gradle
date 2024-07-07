@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+group 'top.kangert.kspider'
+version '0.0.1-SNAPSHOT'
+
+//打包配置
+jar {
+    enabled = true
+}
+
+bootJar {
+    enabled = false
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 引入API包
+    api project(':kspider-api')
+
+    implementation project(':kspider-common')
+
+    // JS解析器
+    implementation 'org.graalvm.js:js-scriptengine:21.0.0'
+    implementation 'org.graalvm.js:js:21.0.0'
+
+    // poi
+    implementation 'com.deepoove:poi-tl:1.12.1'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+test {
+    useJUnitPlatform()
+}

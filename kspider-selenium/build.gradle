@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+group 'top.kangert.kspider'
+version '0.0.1-SNAPSHOT'
+
+//打包配置
+jar {
+    enabled = true
+}
+
+bootJar {
+    enabled = false
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api project(":kspider-api")
+
+    // selenium
+    implementation 'org.seleniumhq.selenium:selenium-api:4.8.1'
+    implementation 'org.seleniumhq.selenium:selenium-remote-driver:4.8.1'
+    implementation 'org.seleniumhq.selenium:selenium-java:4.8.1'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+test {
+    useJUnitPlatform()
+}

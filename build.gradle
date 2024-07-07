@@ -1,0 +1,105 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.2'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'java-library'
+}
+
+// 自定义变量
+ext {
+    JAVA_VERSION = 11
+}
+
+group = 'top.kangert.kspider'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = JAVA_VERSION
+targetCompatibility = JAVA_VERSION
+
+jar {
+    enabled = true
+}
+
+springBoot {
+    mainClass = 'top.kangert.kspider.KspiderApplication'
+}
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+// 所有项目的配置
+allprojects {
+
+    sourceCompatibility = JAVA_VERSION
+    targetCompatibility = JAVA_VERSION
+
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public'  }
+        maven{ url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'https://repo.spring.io/release' }
+        mavenCentral()
+    }
+
+    // 配置字符编码
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+}
+
+// 子模块的配置
+subprojects {
+    apply plugin:'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java-library'
+
+    sourceCompatibility = JAVA_VERSION
+    targetCompatibility = JAVA_VERSION
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.boot:spring-boot-starter-quartz'
+        implementation 'org.springframework.boot:spring-boot-starter-websocket'
+        implementation 'mysql:mysql-connector-java:8.0.32'
+
+        implementation 'org.projectlombok:lombok:1.18.26'
+        annotationProcessor 'org.projectlombok:lombok:1.18.26'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+
+        // hutool
+        implementation 'cn.hutool:hutool-all:5.8.14'
+
+        // 阿里巴巴线程共享
+        implementation 'com.alibaba:transmittable-thread-local:2.12.0'
+
+        implementation 'org.apache.commons:commons-csv:1.8'
+
+        // kspider-core
+        implementation 'org.jsoup:jsoup:1.14.2'
+        implementation 'us.codecraft:xsoup:0.3.2'
+        implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+
+        // kspider-selenium 临时放这里
+        implementation 'org.seleniumhq.selenium:selenium-api:4.8.1'
+        implementation 'org.seleniumhq.selenium:selenium-remote-driver:4.8.1'
+        implementation 'org.seleniumhq.selenium:selenium-java:4.8.1'
+
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'junit:junit'
+        testImplementation 'org.springframework.security:spring-security-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}

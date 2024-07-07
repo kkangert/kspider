@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+group 'top.kangert.kspider'
+version '0.0.1-SNAPSHOT'
+
+//打包配置
+jar {
+    enabled = true
+}
+
+bootJar {
+    enabled = true
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 公共模块
+    implementation project(":kspider-common")
+
+    // 系统核心
+    implementation project(":kspider-core")
+
+    // 验证模块
+    implementation project(":kspider-auth")
+
+    // 使用自定义selenium爬虫工具
+    implementation project(":kspider-selenium")
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <springProperty scope="context" name="LOG_LEVEL"
+        source="logging.level.top.kangert.kspider" defaultValue="INFO" />
+    <springProperty scope="context" name="WORKSPACE" source="spider.workspace"
+        defaultValue="${user.home}/kspider" />
+    <springProperty scope="context" name="LOG_FILE" source="logging.file"
+        defaultValue="${user.home}/kspider/logs/kspider.log" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>${CONSOLE_LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <!-- 输出日志文件 -->
+    <appender name="FILE" class="top.kangert.kspider.logback.SpiderFlowFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>${FILE_LOG_CHARSET}</charset>
+        </encoder>
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${LOGBACK_ROLLINGPOLICY_FILE_NAME_PATTERN:-${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz}</fileNamePattern>
+            <cleanHistoryOnStart>${LOGBACK_ROLLINGPOLICY_CLEAN_HISTORY_ON_START:-false}</cleanHistoryOnStart>
+            <maxFileSize>${LOGBACK_ROLLINGPOLICY_MAX_FILE_SIZE:-10MB}</maxFileSize>
+            <totalSizeCap>${LOGBACK_ROLLINGPOLICY_TOTAL_SIZE_CAP:-0}</totalSizeCap>
+            <maxHistory>${LOGBACK_ROLLINGPOLICY_MAX_HISTORY:-7}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- WebSocket 输出日志 -->
+    <appender name="WEBSOCKET"
+        class="top.kangert.kspider.logback.SpiderFlowWebSocketAppender" />
+
+    <!-- kspider 日志输出级别 -->
+    <logger name="top.kangert.kspider" level="${LOG_LEVEL}" />
+
+    <root level="INFO">
+        <appender-ref ref="FILE" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="WEBSOCKET" />
+    </root>
+
+</configuration>
