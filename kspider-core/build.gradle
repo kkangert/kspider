@@ -20,9 +20,7 @@ repositories {
 
 dependencies {
     // 引入API包
-    api project(':kspider-api')
-
-    implementation project(':kspider-common')
+    implementation project(':kspider-api')
 
     // JS解析器
     implementation 'org.graalvm.js:js-scriptengine:21.0.0'

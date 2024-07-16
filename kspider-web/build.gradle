@@ -19,14 +19,8 @@ repositories {
 }
 
 dependencies {
-    // 公共模块
-    implementation project(":kspider-common")
-
     // 系统核心
     implementation project(":kspider-core")
-
-    // 验证模块
-    implementation project(":kspider-auth")
 
     // 使用自定义selenium爬虫工具
     implementation project(":kspider-selenium")

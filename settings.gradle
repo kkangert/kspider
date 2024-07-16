@@ -1,7 +1,5 @@
 rootProject.name = 'kspider'
-include 'kspider-common'
 include 'kspider-api'
 include 'kspider-core'
-include 'kspider-auth'
 include 'kspider-selenium'
 include 'kspider-web'
