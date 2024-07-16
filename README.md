@@ -40,7 +40,7 @@
 -   重构表达式解析器
 -   增加自定义函数 JavaScript 脚本节点（满足更复杂的数据处理能力）
 -   增加用户管理系统
--   增加OCR图文识别节点
+-   增加 OCR 图文识别节点
 -   增加爬虫任务实时日志
 
 ## 免责声明
@@ -51,3 +51,7 @@
 
 -   WeChat: kangert
 -   Email: kangert@qq.com
+
+## 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=kkangert/kspider&type=Date)](https://star-history.com/#kkangert/kspider&Date)
