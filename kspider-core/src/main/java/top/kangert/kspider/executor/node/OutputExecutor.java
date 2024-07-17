@@ -9,6 +9,7 @@ import top.kangert.kspider.executor.NodeExecutor;
 import top.kangert.kspider.executor.node.event.OutputEventPublisher;
 import top.kangert.kspider.io.SpiderResponse;
 import top.kangert.kspider.listener.SpiderListener;
+import top.kangert.kspider.model.Shape;
 import top.kangert.kspider.model.SpiderNode;
 import top.kangert.kspider.model.SpiderOutput;
 import top.kangert.kspider.support.ExpressionEngine;
@@ -153,6 +154,11 @@ public class OutputExecutor implements NodeExecutor, SpiderListener {
     @Override
     public String supportType() {
         return "output";
+    }
+
+    @Override
+    public Shape shape() {
+        return new Shape(supportType(), "输出", "输出", "ele-DArrowRight", "此节点将所有SpiderOutput数据输出");
     }
 
     private void releasePrinter(String key) {
