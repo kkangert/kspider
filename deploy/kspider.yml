@@ -1,0 +1,64 @@
+version: '3'
+services:
+  kspider-mysql:
+    image: mysql:8.0.38
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ROOT_HOST: '%'
+      TZ: Asia/Shanghai
+    restart: always
+    container_name: kspider-mysql
+
+    # 如需数据持久化更改下方路径
+    # volumes:
+    #   - /home/kspider/data/mysql:/var/lib/mysql
+
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+      --max_allowed_packet=128M
+    ports:
+      - 3306:3306
+
+  # 如需使用selenium节点则开启下方配置
+  # https://github.com/SeleniumHQ/docker-selenium
+  # kspider-selenium:
+  #   image: selenium/standalone-chrome:4.8.1
+  #   container_name: kspider-selenium
+  #   restart: always
+  #   ports:
+  #     - 4444:4444
+  #     - 5900:5900
+  #   environment:
+  #     SE_VNC_PASSWORD: 123456
+  #     SE_NODE_MAX_SESSIONS: 1
+  #     SE_SCREEN_WIDTH: 1920
+  #     SE_SCREEN_HEIGHT: 1080
+  #     SE_SCREEN_DPI: 144
+
+  # https://github.com/kkangert/kspider
+  kspider:
+    image: kkangert/kspider:latest
+    restart: always
+    hostname: kspider
+    container_name: kspider
+    ports:
+      - 8086:8086
+    depends_on:
+      - kspider-mysql
+    environment:
+      envType: user
+
+  # https://github.com/kkangert/kspider-ui
+  kspider-ui:
+    image: kkangert/kspider-ui:latest
+    restart: always
+    hostname: kspider-ui
+    container_name: kspider-ui
+    ports:
+      - 80:80
+    depends_on:
+      - kspider
+      - kspider-mysql
