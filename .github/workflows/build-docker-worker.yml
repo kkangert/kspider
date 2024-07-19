@@ -1,0 +1,42 @@
+name: 构建gpu容器
+
+on:
+  push:
+      branches:
+        - main
+      tags:
+        - "v*.*.*"
+
+  # push:
+  #   paths:
+  #     - 'gpu-dockerfile' # 监测指定的 Dockerfile 文件路径
+  # push:
+  #   branches:
+  #     # 确保这是你正在使用的分支名称
+  #     - main
+
+permissions:
+  contents: write
+
+jobs:
+  publish-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉源码
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: 登陆到DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: 构建和推送镜像
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kspider:latest
