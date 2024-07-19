@@ -1,4 +1,4 @@
-name: 构建gpu容器
+name: build docker images
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
   publish-docker:
     runs-on: ubuntu-latest
     steps:
-      - name: 拉源码
+      - name: pull code
         uses: actions/checkout@v3
 
       - name: 登陆到DockerHub
@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 构建和推送镜像
+      - name: build and push
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
