@@ -50,7 +50,7 @@
 
 ## 社区交流
 
-<img src="docs/images/wechat_group.jpg" width="185" alt="QQ" />
+<img src="docs/images/wechat_group.jpg" width="185" alt="WeChat" />
 
 ## 作者
 
