@@ -1,3 +1,11 @@
+FROM openjdk:17.0.2-slim-bullseye as builds
+
+WORKDIR /app
+COPY . /app/
+RUN apt update 
+# 编译jar包
+
+
 FROM openjdk:17.0.2-slim-bullseye
 
 # 镜像信息
@@ -8,7 +16,7 @@ ENV LANG zh_CN.UTF-8
 ENV LANGUAGE zh_CN.UTF-8
 
 # 复制jar包
-COPY ./kspider-web/build/libs/kspider-web-0.0.1-SNAPSHOT.jar /opt/app.jar
+COPY --from=builds ./kspider-web/build/libs/kspider-web-0.0.1-SNAPSHOT.jar /opt/app.jar
 
 # 暴露端口
 EXPOSE 8086
