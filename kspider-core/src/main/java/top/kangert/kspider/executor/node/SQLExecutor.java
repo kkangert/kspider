@@ -4,6 +4,7 @@ import top.kangert.kspider.constant.Constants;
 import top.kangert.kspider.context.SpiderContext;
 import top.kangert.kspider.executor.NodeExecutor;
 import top.kangert.kspider.model.Grammar;
+import top.kangert.kspider.model.Shape;
 import top.kangert.kspider.model.SpiderNode;
 import top.kangert.kspider.support.DataSourceManager;
 import top.kangert.kspider.support.ExpressionEngine;
@@ -188,6 +189,11 @@ public class SQLExecutor implements NodeExecutor, Grammarly {
     @Override
     public String supportType() {
         return "sql";
+    }
+
+    @Override
+    public Shape shape() {
+        return new Shape(supportType(), "SQL", "SQL", "iconfont icon-file-SQL", "主要用于与数据库交互（查询/修改/插入/删除等等）");
     }
 
     private List<Object[]> convertParameters(Object[] params, int length) {
