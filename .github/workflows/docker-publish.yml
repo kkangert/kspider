@@ -38,11 +38,9 @@ jobs:
         file: Dockerfile
         push: true
         tags: |
-          # docker hub
           ${{ github.repository }}:latest
           ${{ github.repository }}:${{ github.event.release.tag_name }}
 
-          # ghcr.io
           ghcr.io/${{ github.repository }}:latest
           ghcr.io/${{ github.repository }}:${{ github.event.release.tag_name }}
     
