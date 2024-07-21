@@ -7,6 +7,9 @@ LABEL kangert <kangert@qq.com>
 ENV LANG zh_CN.UTF-8
 ENV LANGUAGE zh_CN.UTF-8
 
+# 设置工作空间
+WORKDIR /opt
+
 # 复制jar包
 COPY ./kspider-web/build/libs/kspider-web-0.0.1-SNAPSHOT.jar /opt/app.jar
 
