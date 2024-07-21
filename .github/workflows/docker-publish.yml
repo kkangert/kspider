@@ -21,6 +21,11 @@ jobs:
     - name: Build with gradle
       uses: gradle/gradle-build-action@v3
 
+  push:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+    - run: tree -nh .
     - name: Build and push Docker image
       uses: docker/build-push-action@v6
       with:
