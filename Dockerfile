@@ -1,3 +1,16 @@
+# step1
+FROM openjdk:17.0.2-slim-bullseye as builds
+
+# 设置工作目录
+WORKDIR /app
+COPY . /app/
+
+RUN ls -alh
+
+# 编译
+RUN chmod +x ./gradlew && ./gradlew kspider-web:bootJar
+
+# step2
 FROM openjdk:17.0.2-slim-bullseye
 
 # 镜像信息
@@ -7,11 +20,8 @@ LABEL kangert <kangert@qq.com>
 ENV LANG zh_CN.UTF-8
 ENV LANGUAGE zh_CN.UTF-8
 
-# 设置工作空间
-WORKDIR /opt
-
 # 复制jar包
-COPY ./kspider-web/build/libs/kspider-web-0.0.1-SNAPSHOT.jar /opt/app.jar
+COPY --from=builds /app/kspider-web/build/libs/kspider-web-0.0.1-SNAPSHOT.jar /opt/app.jar
 
 # 暴露端口
 EXPOSE 8086

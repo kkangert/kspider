@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  build:
+  build_push_dockerhub:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,26 +17,12 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
 
-    - name: Make gradlew executable
-      run: chmod +x ./gradlew
-      
-    - name: Build with Gradle
-      run: ./gradlew :bootJar
-
-  push:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-    - run: pwd
     - name: Build and push Docker image
       uses: docker/build-push-action@v6
       with:
         file: Dockerfile
         push: true
         tags: |
-          kkangert/test:latest
-          kkangert/test:${{ github.event.release.tag_name }}
+          ${{ github.repository }}:latest
+          ${{ github.repository }}:${{ github.event.release.tag_name }}
