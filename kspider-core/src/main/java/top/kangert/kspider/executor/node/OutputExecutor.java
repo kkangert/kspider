@@ -189,7 +189,7 @@ public class OutputExecutor implements NodeExecutor, SpiderListener {
         configItemList.add(outputType);
 
         // 输出文件名称（输出方式为CSV时生效）
-        ConfigItem csvName = new ConfigItem("文件名称", ConfigItem.ComponentType.EL_INPUT, ConfigItem.DataType.LIST_STRING, OUTPUT_TYPE, "请输入CSV文件名称", "", null, outputTypeConfigItem, false);
+        ConfigItem csvName = new ConfigItem("文件名称", ConfigItem.ComponentType.EL_INPUT, ConfigItem.DataType.LIST_STRING, "csvName", "请输入CSV文件名称", "", null, outputTypeConfigItem, false);
         configItemList.add(csvName);
 
         // 是否输出所有变量
