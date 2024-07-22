@@ -1,0 +1,39 @@
+name: generate stealth.min.js
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.10.0]
+
+    steps:
+      - name: Checkout Codes
+        uses: actions/checkout@v3
+
+      - name: Prepare Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Build Script
+        run: |
+          npx extract-stealth-evasions
+          cp -f stealth.min.js ./kspider-web/src/main/resources
+          
+      - name: Commit stealth.min.js
+        uses: EndBug/add-and-commit@v4
+        with:
+          add: './kspider-web/src/main/resources/stealth.min.js'
+          force: true
+          ref: 'main'
+          message: '更新 stealth.min.js版本'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
