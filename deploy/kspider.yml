@@ -28,6 +28,7 @@ services:
   #   image: selenium/standalone-chrome:4.8.1
   #   container_name: kspider-selenium
   #   restart: always
+  #   shm_size: 2gb
   #   ports:
   #     - 4444:4444
   #     - 5900:5900
