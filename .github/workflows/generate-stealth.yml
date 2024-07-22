@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '0 6 * * 1'
 
+permissions:
+    contents: write
+
 jobs:
   build:
 
@@ -29,11 +32,10 @@ jobs:
           cp -f stealth.min.js ./kspider-web/src/main/resources
           
       - name: Commit stealth.min.js
-        uses: EndBug/add-and-commit@v4
+        uses: EndBug/add-and-commit@v9
         with:
           add: './kspider-web/src/main/resources/stealth.min.js'
-          force: true
-          ref: 'main'
+          fetch: true
           message: '更新 stealth.min.js版本'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
