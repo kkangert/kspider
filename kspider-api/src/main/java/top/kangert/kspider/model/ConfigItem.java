@@ -15,7 +15,6 @@ import cn.hutool.json.JSONUtil;
  * 当前执行器节点的配置项(用于前端动态渲染该节点的配置项)
  */
 @Data
-@AllArgsConstructor
 public class ConfigItem {
     /**
      * 输入项标签名称
@@ -64,6 +63,12 @@ public class ConfigItem {
 
     public ConfigItem(String labelName, ComponentType componentType, DataType dataType, String propName,
             String placeholder, Object value, Map<String, Object> attributes, List<SelectItem> childrenItem) {
+        this(labelName, componentType, dataType, propName, placeholder, value, attributes, childrenItem, false);
+    }
+
+    public ConfigItem(String labelName, ComponentType componentType, DataType dataType, String propName,
+            String placeholder, Object value, Map<String, Object> attributes, List<SelectItem> childrenItem,
+            Boolean required) {
         this.labelName = labelName;
         this.componentType = componentType;
         this.dataType = dataType;
@@ -72,6 +77,7 @@ public class ConfigItem {
         this.value = value;
         this.attributes = attributes;
         this.childrenItem = childrenItem;
+        this.required = required;
     }
 
     @Override

@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 
 import javax.annotation.Resource;
@@ -117,6 +118,10 @@ public class OutputEventHandler {
 
         // 获取文件名
         String csvName = node.getJsonProperty(OUTPUT_CSV_NAME);
+        if (StrUtil.isBlank(csvName)) {
+            // 生成一个不重复的hash字符串
+            csvName = StrUtil.uuid().substring(0, RandomUtil.randomInt(8, 12));
+        }
         if (outputItems == null || outputItems.isEmpty()) {
             return;
         }
@@ -135,8 +140,9 @@ public class OutputEventHandler {
                     printer = cachePrinter.get(key);
                     if (printer == null) {
                         CSVFormat format = CSVFormat.DEFAULT.withHeader(headers.toArray(new String[headers.size()]));
-                        FileOutputStream os = new FileOutputStream(
-                                spiderConfig.getWorkspace() + File.separator + csvName);
+                        String fileName = spiderConfig.getWorkspace() + File.separator + "files" + File.separator
+                                + context.getFlowId() + "_" + context.getTaskId() + File.separator + csvName + ".csv";
+                        FileOutputStream os = new FileOutputStream(fileName);
                         String csvEncoding = node.getJsonProperty(OUTPUT_CSV_ENCODING);
                         if ("UTF-8BOM".equals(csvEncoding)) {
                             csvEncoding = csvEncoding.substring(0, 5);

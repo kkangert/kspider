@@ -74,6 +74,7 @@ public class SpiderJobContext extends SpiderContext {
         OutputStream os = new FileOutputStream(file, true);
         SpiderJobContext context = new SpiderJobContext(os, allowOutput);
         context.setFlowId(flowId);
+        context.setTaskId(taskId);
         return context;
     }
 }

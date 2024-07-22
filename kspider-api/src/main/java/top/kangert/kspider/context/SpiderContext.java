@@ -55,6 +55,13 @@ public class SpiderContext {
     private Long flowId;
 
     /**
+     * 任务 ID
+     */
+    @Getter
+    @Setter
+    private Long taskId;
+
+    /**
      * Cookie 上下文
      */
     @Getter

@@ -4,11 +4,13 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.json.JSONConfig;
 import cn.hutool.json.JSONUtil;
 import top.kangert.kspider.constant.Constants;
+import top.kangert.kspider.constant.OutputType;
 import top.kangert.kspider.context.SpiderContext;
 import top.kangert.kspider.executor.NodeExecutor;
 import top.kangert.kspider.executor.node.event.OutputEventPublisher;
 import top.kangert.kspider.io.SpiderResponse;
 import top.kangert.kspider.listener.SpiderListener;
+import top.kangert.kspider.model.ConfigItem;
 import top.kangert.kspider.model.Shape;
 import top.kangert.kspider.model.SpiderNode;
 import top.kangert.kspider.model.SpiderOutput;
@@ -29,6 +31,11 @@ import java.util.*;
 @Component
 @Slf4j
 public class OutputExecutor implements NodeExecutor, SpiderListener {
+
+    /**
+     * 输出方式
+     */
+    String OUTPUT_TYPE = "output-type";
 
     /**
      * 输出其他变量
@@ -159,6 +166,40 @@ public class OutputExecutor implements NodeExecutor, SpiderListener {
     @Override
     public Shape shape() {
         return new Shape(supportType(), "输出", "输出", "ele-DArrowRight", "此节点将所有SpiderOutput数据输出");
+    }
+
+    @Override
+    public List<ConfigItem> configItems() {
+        List<ConfigItem> configItemList = new ArrayList<>();
+        List<ConfigItem.SelectItem> outputTypeConfigItem = new ArrayList<>();
+        // 输出至数据库
+        ConfigItem.SelectItem dbItem = new ConfigItem.SelectItem("数据库(TODO)", OutputType.DATABASE.getVariableName(), ConfigItem.DataType.STRING);
+        outputTypeConfigItem.add(dbItem);
+
+        // 输出至UI
+        ConfigItem.SelectItem uiItem = new ConfigItem.SelectItem("UI(TODO)", OutputType.UI.getVariableName(),ConfigItem.DataType.STRING);
+        outputTypeConfigItem.add(uiItem);
+
+        // 输出至CSV
+        ConfigItem.SelectItem csvItem = new ConfigItem.SelectItem("CSV", OutputType.CSV.getVariableName(),ConfigItem.DataType.STRING);
+        outputTypeConfigItem.add(csvItem);
+
+        // 输出方式
+        ConfigItem outputType = new ConfigItem("输出方式", ConfigItem.ComponentType.EL_MULT_SELECT, ConfigItem.DataType.LIST_STRING, OUTPUT_TYPE, "请选择输出方式", Arrays.asList(OutputType.CSV.getVariableName()), null, outputTypeConfigItem, true);
+        configItemList.add(outputType);
+
+        // 输出文件名称（输出方式为CSV时生效）
+        ConfigItem csvName = new ConfigItem("文件名称", ConfigItem.ComponentType.EL_INPUT, ConfigItem.DataType.LIST_STRING, OUTPUT_TYPE, "请输入CSV文件名称", "", null, outputTypeConfigItem, false);
+        configItemList.add(csvName);
+
+        // 是否输出所有变量
+        List<ConfigItem.SelectItem> outputAllVar = new ArrayList<>();
+        outputAllVar.add(new ConfigItem.SelectItem("是", "true", ConfigItem.DataType.BOOLEAN));
+        outputAllVar.add(new ConfigItem.SelectItem("否", "false", ConfigItem.DataType.BOOLEAN));
+        ConfigItem outputAllVarConfigItem = new ConfigItem("输出全部参数", ConfigItem.ComponentType.EL_SWITCH, ConfigItem.DataType.BOOLEAN, OUTPUT_OTHERS, "", false, null, outputAllVar);
+        configItemList.add(outputAllVarConfigItem);
+
+        return configItemList;
     }
 
     private void releasePrinter(String key) {

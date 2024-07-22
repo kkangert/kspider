@@ -11,7 +11,12 @@ public enum OutputType {
      * 数据库输出
      */
     DATABASE("output-database"),
-    
+
+    /**
+     * UI输出，主要用于测试
+     */
+    UI("output-ui"),
+
     /**
      * CSV文件输出
      */
