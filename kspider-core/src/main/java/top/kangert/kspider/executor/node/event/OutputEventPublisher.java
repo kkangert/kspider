@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import cn.hutool.core.convert.Convert;
+
 import java.util.List;
 
 @Component
@@ -30,9 +32,12 @@ public class OutputEventPublisher {
      */
     public void publish(SpiderContext context, SpiderNode node, List<SpiderOutput.OutputItem> outputItems) {
         OutputType[] outputTypes = OutputType.values();
+        List<String> outputTypeArr = Convert.toList(String.class, node.getJsonProperty(Constants.OUTPUT_TYPE));
         for (OutputType outputType : outputTypes) {
-            if (Constants.YES.equals(node.getJsonProperty(outputType.getVariableName()))) {
-                eventPublisher.publishEvent(new OutputEventBean(context, node, outputItems, outputType.getVariableName()));
+            for (String userSelected : outputTypeArr) {
+                if (userSelected.equals(outputType.getVariableName())) {
+                    eventPublisher.publishEvent(new OutputEventBean(context, node, outputItems, outputType.getVariableName()));
+                }
             }
         }
     }

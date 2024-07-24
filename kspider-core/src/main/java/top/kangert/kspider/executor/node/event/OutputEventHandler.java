@@ -15,6 +15,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -140,9 +141,12 @@ public class OutputEventHandler {
                     printer = cachePrinter.get(key);
                     if (printer == null) {
                         CSVFormat format = CSVFormat.DEFAULT.withHeader(headers.toArray(new String[headers.size()]));
-                        String fileName = spiderConfig.getWorkspace() + File.separator + "files" + File.separator
-                                + context.getFlowId() + "_" + context.getTaskId() + File.separator + csvName + ".csv";
-                        FileOutputStream os = new FileOutputStream(fileName);
+                        String fileName = spiderConfig.getWorkspace() + File.separator + "files" + File.separator + node.getNodeId() + "_" + DateUtil.format(DateUtil.date(), "yyyyMMddHHmmss") + File.separator + csvName + ".csv";
+                        File csvFile = new File(fileName);
+                        if (csvFile.getParentFile() != null) {
+                            csvFile.getParentFile().mkdirs();
+                        }
+                        FileOutputStream os = new FileOutputStream(csvFile);
                         String csvEncoding = node.getJsonProperty(OUTPUT_CSV_ENCODING);
                         if ("UTF-8BOM".equals(csvEncoding)) {
                             csvEncoding = csvEncoding.substring(0, 5);

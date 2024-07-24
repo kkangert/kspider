@@ -1,6 +1,7 @@
 package top.kangert.kspider.executor.node;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONConfig;
 import cn.hutool.json.JSONUtil;
 import top.kangert.kspider.constant.Constants;
@@ -33,24 +34,24 @@ import java.util.*;
 public class OutputExecutor implements NodeExecutor, SpiderListener {
 
     /**
-     * 输出方式
-     */
-    String OUTPUT_TYPE = "output-type";
-
-    /**
      * 输出其他变量
      */
     String OUTPUT_OTHERS = "output-others";
 
     /**
+     * 输出项
+     */
+    String OUTPUT_ITEM = "output-item";
+
+    /**
      * 输出项的名称
      */
-    String OUTPUT_NAME = "output-name";
+    String OUTPUT_NAME = "key";
 
     /**
      * 输出项的值
      */
-    String OUTPUT_VALUE = "output-value";
+    String OUTPUT_VALUE = "value";
 
     @Resource
     private ExpressionEngine expressionEngine;
@@ -99,11 +100,13 @@ public class OutputExecutor implements NodeExecutor, SpiderListener {
             SpiderNode node) {
         List<SpiderOutput.OutputItem> outputItems = new ArrayList<>();
         // 获取用户设置的所有输出项
-        List<Map<String, String>> items = node.getJsonArrayProperty(OUTPUT_NAME, OUTPUT_VALUE);
+        List<Map<String, String>> items = node.getJsonArrayProperty(OUTPUT_ITEM);
         for (Map<String, String> item : items) {
+            String outputItem = item.get(OUTPUT_ITEM);
+            Map<String, String> kvMap = JSONUtil.toBean(outputItem, new TypeReference<Map<String, String>>() {}, false);
             Object value = null;
-            String itemName = item.get(OUTPUT_NAME);
-            String itemValue = item.get(OUTPUT_VALUE);
+            String itemName = kvMap.get(OUTPUT_NAME);
+            String itemValue = kvMap.get(OUTPUT_VALUE);
             try {
                 value = expressionEngine.execute(itemValue, variables);
                 context.pause(node.getNodeId(), WebSocketEvent.COMMON_EVENT, itemName, value);
@@ -185,12 +188,20 @@ public class OutputExecutor implements NodeExecutor, SpiderListener {
         outputTypeConfigItem.add(csvItem);
 
         // 输出方式
-        ConfigItem outputType = new ConfigItem("输出方式", ConfigItem.ComponentType.EL_MULT_SELECT, ConfigItem.DataType.LIST_STRING, OUTPUT_TYPE, "请选择输出方式", Arrays.asList(OutputType.CSV.getVariableName()), null, outputTypeConfigItem, true);
+        ConfigItem outputType = new ConfigItem("输出方式", ConfigItem.ComponentType.EL_MULT_SELECT, ConfigItem.DataType.LIST_STRING, Constants.OUTPUT_TYPE, "请选择输出方式", Arrays.asList(OutputType.CSV.getVariableName()), null, outputTypeConfigItem, true);
         configItemList.add(outputType);
 
         // 输出文件名称（输出方式为CSV时生效）
-        ConfigItem csvName = new ConfigItem("文件名称", ConfigItem.ComponentType.EL_INPUT, ConfigItem.DataType.LIST_STRING, "csvName", "请输入CSV文件名称", "", null, outputTypeConfigItem, false);
+        ConfigItem csvName = new ConfigItem("文件名称", ConfigItem.ComponentType.EL_INPUT, ConfigItem.DataType.STRING, "csvName", "请输入CSV文件名称", "", null, outputTypeConfigItem, false);
         configItemList.add(csvName);
+
+        // 输出文件编码（输出方式为CSV时生效）
+        List<ConfigItem.SelectItem> csvEncodingChoice = new ArrayList<>();
+        csvEncodingChoice.add(new ConfigItem.SelectItem("UTF-8", "UTF-8", ConfigItem.DataType.STRING));
+        csvEncodingChoice.add(new ConfigItem.SelectItem("UTF-8BOM", "UTF-8BOM", ConfigItem.DataType.STRING));
+        csvEncodingChoice.add(new ConfigItem.SelectItem("GBK", "GBK", ConfigItem.DataType.STRING));
+        ConfigItem csvEncoding = new ConfigItem("文件编码", ConfigItem.ComponentType.EL_SELECT, ConfigItem.DataType.STRING, "csvEncoding", "请选择CSV文件编码", csvEncodingChoice.get(0).getValue(), null, csvEncodingChoice, false);
+        configItemList.add(csvEncoding);
 
         // 是否输出所有变量
         List<ConfigItem.SelectItem> outputAllVar = new ArrayList<>();
@@ -198,6 +209,10 @@ public class OutputExecutor implements NodeExecutor, SpiderListener {
         outputAllVar.add(new ConfigItem.SelectItem("否", "false", ConfigItem.DataType.BOOLEAN));
         ConfigItem outputAllVarConfigItem = new ConfigItem("输出全部参数", ConfigItem.ComponentType.EL_SWITCH, ConfigItem.DataType.BOOLEAN, OUTPUT_OTHERS, "", false, null, outputAllVar);
         configItemList.add(outputAllVarConfigItem);
+
+        // 输出项配置（键值对）
+        ConfigItem outputItem = new ConfigItem("输出项", ConfigItem.ComponentType.CUSTOM_MULT_KEY_VALUE, ConfigItem.DataType.LIST_MAP, OUTPUT_ITEM, "请输入输出项", new ArrayList<>(), null, outputTypeConfigItem, false);
+        configItemList.add(outputItem);
 
         return configItemList;
     }
