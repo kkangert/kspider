@@ -24,7 +24,7 @@ spring:
         date-format: yyyy-MM-dd HH:mm:ss
     # datasource
     datasource:
-        url: jdbc:mysql://kspider-mysql:3306/kspider?createDatabaseIfNotExist=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=true
+        url: jdbc:mysql://127.0.0.1:3306/kspider?createDatabaseIfNotExist=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=true
         username: root
         password: 123456
         driver-class-name: com.mysql.cj.jdbc.Driver
@@ -55,7 +55,7 @@ spider:
     # 死循环检测（只在测试流程时才会启用）
     dead-cycle: 5000
     # 工作目录
-    workspace: ${user.home}/kspider
+    workspace: ${user.home}${file.separator}kspider
     # 线程池
     thread-pool:
         # 线程池最大线程数
