@@ -102,6 +102,11 @@ public interface Constants {
      */
     String DATASOURCE_ID = "datasourceId";
 
+    /**
+     * 输出方式
+     */
+    String OUTPUT_TYPE = "output-type";
+
     // *************************************************************************************
     // Node Property Value
     // *************************************************************************************
