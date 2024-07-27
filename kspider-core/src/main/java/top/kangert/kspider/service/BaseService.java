@@ -29,7 +29,7 @@ public abstract class BaseService {
     protected Pageable processPage(Map<String, Object> params) {
         Integer currentPage = (Integer) params.get("currentPage");
         Integer pageSize = (Integer) params.get("pageSize");
-        return PageRequest.of(currentPage != null ? currentPage - 1 : 1, pageSize != null ? pageSize : 5);
+        return PageRequest.of(currentPage != null ? currentPage - 1 : 0, pageSize != null ? pageSize : 5);
     }
 
     /**
