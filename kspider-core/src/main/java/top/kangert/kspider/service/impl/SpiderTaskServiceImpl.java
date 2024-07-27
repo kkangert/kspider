@@ -99,15 +99,16 @@ public class SpiderTaskServiceImpl extends BaseService implements SpiderTaskServ
     @Transactional(rollbackFor = Exception.class)
     public SpiderTask add(Map<String, Object> params) {
         checkParams(params, new String[] { "flowId", "matedata", "taskName" });
-        Map<String,Object> matedata = JSONUtil.toBean((String)params.get("matedata"),
-                new TypeReference<Map<String, Object>>() {}, false);
+        Map<String, Object> matedata = JSONUtil.toBean((String) params.get("matedata"),
+                new TypeReference<Map<String, Object>>() {
+                }, false);
         // 判断平台类型
         if (!matedata.containsKey("classNo")) {
             // 校验线上元数据
-            checkParams(matedata, new String[] { "username", "enterpriseName", "password", "className" });
+            checkParams(matedata, new String[] {});
         } else {
             // 校验线下元数据
-            checkParams(matedata, new String[] { "classId", "classNo"});
+            checkParams(matedata, new String[] {});
         }
         SpiderTask spiderTask = transformEntity(params, SpiderTask.class);
         if (spiderTask.getFlowId() != null) {
@@ -180,15 +181,16 @@ public class SpiderTaskServiceImpl extends BaseService implements SpiderTaskServ
 
         if (params.containsKey("matedata")) {
             // 校验元数据
-            Map<String,Object> matedata = JSONUtil.toBean((String)params.get("matedata"),
-                    new TypeReference<Map<String, Object>>() {}, false);
+            Map<String, Object> matedata = JSONUtil.toBean((String) params.get("matedata"),
+                    new TypeReference<Map<String, Object>>() {
+                    }, false);
             // 判断平台类型
             if (!matedata.containsKey("classNo")) {
                 // 校验线上元数据
-                checkParams(matedata, new String[] { "username", "enterpriseName", "password", "className" });
+                checkParams(matedata, new String[] {});
             } else {
                 // 校验线下元数据
-                checkParams(matedata, new String[] { "classId", "classNo"});
+                checkParams(matedata, new String[] {});
             }
         }
 
@@ -319,7 +321,8 @@ public class SpiderTaskServiceImpl extends BaseService implements SpiderTaskServ
         Long taskId = Convert.toLong(params.get("taskId"));
         SpiderTask spiderTask = queryItem(taskId);
         String matedata = spiderTask.getMatedata();
-        Map<String, Object> variables = JSONUtil.toBean(matedata, new TypeReference<Map<String, Object>>() {}, false);
+        Map<String, Object> variables = JSONUtil.toBean(matedata, new TypeReference<Map<String, Object>>() {
+        }, false);
         String fileName = null;
         String filePath = null;
         BufferedInputStream inputStream = null;
@@ -329,7 +332,8 @@ public class SpiderTaskServiceImpl extends BaseService implements SpiderTaskServ
         if (variables.containsKey("classNo")) {
             fileName = variables.get("classNo") + ".json";
             // json文件路径
-            String jsonPath = spiderConfig.getWorkspace() + File.separator + "fileData" + File.separator + "json" + File.separator + fileName;
+            String jsonPath = spiderConfig.getWorkspace() + File.separator + "fileData" + File.separator + "json"
+                    + File.separator + fileName;
             if (!FileUtil.exist(jsonPath)) {
                 throw new BaseException(ExceptionCodes.FILE_NOT_EXIST);
             }
@@ -382,8 +386,8 @@ public class SpiderTaskServiceImpl extends BaseService implements SpiderTaskServ
                     log.error(e.getMessage(), e);
                 }
             }
-             // 删除线上文件压缩包
-             if (fileName.lastIndexOf("zip") > 0) {
+            // 删除线上文件压缩包
+            if (fileName.lastIndexOf("zip") > 0) {
                 FileUtil.del(filePath);
             }
         }
