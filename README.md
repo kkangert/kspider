@@ -52,7 +52,7 @@
 
 ## 社区交流
 
-<img src="docs/images/wechat_group.jpg" width="185" alt="WeChat" />
+[最新入群二维码](https://github.com/kkangert/kspider/issues/1)
 
 ## 作者
 
