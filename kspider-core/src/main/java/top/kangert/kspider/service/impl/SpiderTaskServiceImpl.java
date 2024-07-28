@@ -27,13 +27,13 @@ import org.springframework.transaction.support.TransactionTemplate;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.io.FileInputStream;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -316,80 +317,35 @@ public class SpiderTaskServiceImpl extends BaseService implements SpiderTaskServ
 
     @Override
     public void download(Map<String, Object> params, HttpServletResponse response) {
-        checkParams(params, new String[] { "taskId" });
-        // 获取任务
-        Long taskId = Convert.toLong(params.get("taskId"));
-        SpiderTask spiderTask = queryItem(taskId);
-        String matedata = spiderTask.getMatedata();
-        Map<String, Object> variables = JSONUtil.toBean(matedata, new TypeReference<Map<String, Object>>() {
-        }, false);
-        String fileName = null;
-        String filePath = null;
-        BufferedInputStream inputStream = null;
-        BufferedOutputStream outputStream = null;
-
-        // 判断平台类型
-        if (variables.containsKey("classNo")) {
-            fileName = variables.get("classNo") + ".json";
-            // json文件路径
-            String jsonPath = spiderConfig.getWorkspace() + File.separator + "fileData" + File.separator + "json"
-                    + File.separator + fileName;
-            if (!FileUtil.exist(jsonPath)) {
-                throw new BaseException(ExceptionCodes.FILE_NOT_EXIST);
-            }
-            inputStream = FileUtil.getInputStream(jsonPath);
+        checkParams(params, new String[] { "flowId" });
+        Long flowId = Convert.toLong(params.get("flowId"));
+        String filePath = spiderConfig.getWorkspace() + File.separator + "files";
+        if (params.containsKey("taskId")) {
+            Long taskId = Convert.toLong(params.get("taskId"));
+            filePath += File.separator + "prod_flowid_taskid" + File.separator + flowId + "_" + taskId;
         } else {
-            // zip压缩路径
-            String enterpriseName = Convert.toStr(variables.get("enterpriseName"));
-            String className = Convert.toStr(variables.get("className"));
-            long currentTime = System.currentTimeMillis();
-            // 上级目录
-            String upCatalog = taskId + "_" + enterpriseName;
-            String srcPath = spiderConfig.getWorkspace() + File.separator + "fileData" + File.separator + upCatalog;
-            filePath = spiderConfig.getWorkspace() + File.separator + "fileData" + File.separator + "zip"
-                    + File.separator + enterpriseName + currentTime + ".zip";
-            if (!FileUtil.exist(srcPath)) {
-                throw new BaseException(ExceptionCodes.FILE_NOT_EXIST);
-            }
-            // 线上文件压缩
-            ZipUtil.zip(srcPath, filePath);
-            fileName = taskId + "-" + enterpriseName + "-" + className + ".zip";
-            inputStream = FileUtil.getInputStream(filePath);
+            filePath += File.separator + "test_flowid" + File.separator + flowId;
         }
 
-        try {
-            // 重置响应头信息
+        if (!FileUtil.exist(filePath)) {
+            throw new BaseException("文件不存在,请先启动!");
+        }
+
+        String zipPath = filePath + ".zip";
+        File zipFile = ZipUtil.zip(filePath, zipPath);
+        try (BufferedOutputStream outputStream = new BufferedOutputStream(response.getOutputStream());) {
             response.reset();
-            response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(zipFile.getName(), "UTF-8"));
             response.setContentType("application/octet-stream;charset=UTF-8");
-            outputStream = new BufferedOutputStream(response.getOutputStream());
-            byte[] readBytes = new byte[inputStream.available()];
-            inputStream.read(readBytes);
-            response.setHeader("Content-Length", "" + readBytes.length);
-            outputStream.write(readBytes);
+            FileInputStream inputStream = new FileInputStream(zipFile);
+            byte[] bytes = IoUtil.readBytes(inputStream);
+            outputStream.write(bytes);
             outputStream.flush();
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        } catch (IOException e) {
+            log.error("文件导出失败", e.getCause());
             throw new BaseException(ExceptionCodes.FILE_EXPORT_FAILED);
         } finally {
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-            // 删除线上文件压缩包
-            if (fileName.lastIndexOf("zip") > 0) {
-                FileUtil.del(filePath);
-            }
+            zipFile.delete();
         }
     }
 }

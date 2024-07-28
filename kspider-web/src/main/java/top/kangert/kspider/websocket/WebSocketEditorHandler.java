@@ -35,6 +35,8 @@ public class WebSocketEditorHandler extends TextWebSocketHandler {
         JSONObject event = JSONUtil.parseObj(message.getPayload());
         // 获取事件类型
         String eventType = event.getStr("eventType");
+        // 获取flowId
+        Long flowId = event.getLong("flowId");
         // 是 debug 类型的事件吗
         boolean isDebug = WebSocketEvent.DEBUG_EVENT_TYPE.equalsIgnoreCase(eventType);
         // test 类型事件或 debug 类型事件
@@ -42,6 +44,7 @@ public class WebSocketEditorHandler extends TextWebSocketHandler {
             // 创建 WebSocket 通信时使用的爬虫上下文
             context = new SpiderWebSocketContext(session);
             context.setDebug(isDebug);
+            context.setFlowId(flowId);
             context.setRunning(true);
             // 异步执行
             CompletableFuture.runAsync(() -> {
