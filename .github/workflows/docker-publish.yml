@@ -50,6 +50,9 @@ jobs:
 
           ghcr.io/${{ github.repository }}:latest
           ghcr.io/${{ github.repository }}:${{ github.event.release.tag_name }}
+
+          registry.cn-beijing.aliyuncs.com/${{ github.repository }}:latest
+          registry.cn-beijing.aliyuncs.com/${{ github.repository }}:${{ github.event.release.tag_name }}
     
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v1
