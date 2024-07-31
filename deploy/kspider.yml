@@ -3,7 +3,7 @@ services:
   kspider-mysql:
     image: mysql:8.0.38
     environment:
-      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_ROOT_HOST: '%'
       TZ: Asia/Shanghai
     restart: always
@@ -20,7 +20,7 @@ services:
       --lower_case_table_names=1
       --max_allowed_packet=128M
     ports:
-      - 3306:3306
+      - ${DB_PORT}:3306
 
   # 如需使用selenium节点则开启下方配置
   # https://github.com/SeleniumHQ/docker-selenium
@@ -46,11 +46,15 @@ services:
     hostname: kspider
     container_name: kspider
     ports:
-      - 8086:8086
+      - ${KSPIDER_BACKEND_PORT}:8086
     depends_on:
       - kspider-mysql
     environment:
       envType: user
+      DB_HOST: ${DB_HOST}
+      DB_ROOT_USERNAME: ${DB_ROOT_USERNAME}
+      DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      DB_PORT: ${DB_PORT}
 
   # https://github.com/kkangert/kspider-ui
   kspider-ui:
@@ -59,7 +63,7 @@ services:
     hostname: kspider-ui
     container_name: kspider-ui
     ports:
-      - 80:80
+      - ${KSPIDER_WEB_PORT}:80
     depends_on:
       - kspider
       - kspider-mysql
