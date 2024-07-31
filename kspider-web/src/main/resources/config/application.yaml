@@ -24,9 +24,9 @@ spring:
         date-format: yyyy-MM-dd HH:mm:ss
     # datasource
     datasource:
-        url: jdbc:mysql://kspider-mysql:3306/kspider?createDatabaseIfNotExist=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=true
-        username: root
-        password: 123456
+        url: jdbc:mysql://${MYSQL_ROOT_ADDRESS}:${MYSQL_PORT}/kspider?createDatabaseIfNotExist=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=true
+        username: ${MYSQL_ROOT_USERNAME}
+        password: ${MYSQL_ROOT_PASSWORD}
         driver-class-name: com.mysql.cj.jdbc.Driver
     # jpa
     jpa:
