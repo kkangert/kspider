@@ -328,7 +328,7 @@ public class SpiderTaskServiceImpl extends BaseService implements SpiderTaskServ
         }
 
         if (!FileUtil.exist(filePath)) {
-            throw new BaseException("文件不存在,请先启动!");
+            throw new BaseException(ExceptionCodes.FILE_NOT_EXIST);
         }
 
         String zipPath = filePath + ".zip";
