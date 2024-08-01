@@ -703,7 +703,7 @@ public class RequestExecutor implements NodeExecutor, Grammarly {
 
         //节点变量
         ConfigItem nodeVariableName = new ConfigItem("节点变量", ConfigItem.ComponentType.EL_INPUT,
-                ConfigItem.DataType.STRING, "nodeVariableName", "请输入节点变量", "rest", null, null);
+                ConfigItem.DataType.STRING, "nodeVariableName", "请输入节点变量", "resp", null, null);
         configItemList.add(nodeVariableName);
 
         //请求的延迟时间  默认0s
