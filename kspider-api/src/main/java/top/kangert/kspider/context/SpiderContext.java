@@ -34,6 +34,13 @@ public class SpiderContext {
     private volatile boolean running = true;
 
     /**
+     * 调试模式
+     */
+    @Getter
+    @Setter
+    private boolean debug = false;
+
+    /**
      * 子线程池
      */
     @Getter

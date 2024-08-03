@@ -20,10 +20,6 @@ import java.util.Date;
  */
 public class SpiderWebSocketContext extends SpiderContext {
 
-    @Getter
-    @Setter
-    private boolean debug;
-
     private WebSocketSession session;
 
     private Object lock = new Object();
@@ -56,9 +52,9 @@ public class SpiderWebSocketContext extends SpiderContext {
 
     @Override
     public void pause(String nodeId, String event, String key, Object value) {
-        if (this.debug && this.isRunning()) {
+        if (this.isDebug() && this.isRunning()) {
             synchronized (this) {
-                if (this.debug && this.isRunning()) {
+                if (this.isDebug() && this.isRunning()) {
                     synchronized (lock) {
                         try {
                             // 向客户端发送消息
@@ -75,7 +71,7 @@ public class SpiderWebSocketContext extends SpiderContext {
 
     @Override
     public void resume() {
-        if (this.debug) {
+        if (this.isDebug()) {
             synchronized (lock) {
                 lock.notify();
             }
@@ -84,7 +80,7 @@ public class SpiderWebSocketContext extends SpiderContext {
 
     @Override
     public void stop() {
-        if (this.debug) {
+        if (this.isDebug()) {
             synchronized (lock) {
                 lock.notifyAll();
             }
