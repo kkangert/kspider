@@ -34,7 +34,8 @@ out/
 /.nb-gradle/
 
 ### VS Code ###
-.vscode/
+.vscode/*
+!.vscode/launch.json
 
 ### 自定义git过滤规则
 /kspider-web/src/main/resources/static
