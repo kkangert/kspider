@@ -1,0 +1,25 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "KspiderApplication",
+            "request": "launch",
+            "mainClass": "top.kangert.kspider.KspiderApplication",
+            "projectName": "kspider-web",
+            "env": {
+                "DB_HOST": "127.0.0.1",
+                "DB_ROOT_USERNAME": "root",
+                "DB_ROOT_PASSWORD": "123456",
+                "DB_PORT": "3306",
+                "SE_VNC_PASSWORD": "123456",
+                "SE_NODE_MAX_SESSIONS": "1",
+                "KSPIDER_WEB_PORT": "80",
+                "KSPIDER_BACKEND_PORT": "8086"
+            }
+        }
+    ]
+}
