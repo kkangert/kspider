@@ -99,7 +99,6 @@ public class SpiderJob extends QuartzJobBean {
             Map<String, Object> variables = JSONUtil.toBean(task.getMatedata(),
                     new TypeReference<Map<String, Object>>() {
                     }, false);
-            variables.put("taskId", task.getTaskId());
             spider.run(flow, context, variables);
             log.info("流程：{} 执行完毕，任务 ID 为：{}，下次执行时间：{}", flow.getName(), task.getTaskId(),
                     DateUtil.format(nextTime, "yyyy-MM-dd HH:mm:ss"));
