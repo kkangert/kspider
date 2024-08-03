@@ -352,13 +352,15 @@ public class KspiderRuntime {
                             } catch (Throwable t) {
                                 // 如果是调试\测试流程暂无taskId，则无需更新任务状态
                                 if (!context.isDebug()) {
-                                    long taskId = (long) variables.get("taskId");
-                                    // 修改任务运行状态
-                                    SpiderTask spiderTask = spiderTaskRepository.findById(taskId).get();
-                                    spiderTask.setRunState(TaskStateEnum.TASK_ERROR.getTypeCode());
-                                    spiderTaskRepository.save(spiderTask);
+                                    Long taskId = context.getTaskId();
+                                    if (taskId != null) {
+                                        // 修改任务运行状态
+                                        SpiderTask spiderTask = spiderTaskRepository.findById(taskId).get();
+                                        spiderTask.setRunState(TaskStateEnum.TASK_ERROR.getTypeCode());
+                                        spiderTaskRepository.save(spiderTask);
+                                    }
                                 }
-                                
+
                                 // 记录异常信息
                                 newVariables.put(Constants.EXCEPTION_VARIABLE, t);
                                 log.error("执行节点 {} 出现异常", node, t);
