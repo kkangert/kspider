@@ -60,7 +60,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         session.setAttribute("username", user.getUsername());
         Cookie cookie = new Cookie("token",token);
         cookie.setPath("/");
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         response.addCookie(cookie);
     }
 
